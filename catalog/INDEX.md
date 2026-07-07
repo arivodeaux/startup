@@ -10,6 +10,7 @@ plain table you can extend with a PR-free commit.
 | `component-libraries.md` | UI component kits and design systems |
 | `free-apis.md` | Free / no-cost public APIs by category |
 | `oss-and-gov-repos.md` | Open-source and government open-data repos (NASA, data.gov, and friends) |
+| `federal-oss.md` | Federal open source mapped to **creative integrations** (asset -> non-obvious build -> first step). Fuel for the `suggest-integrations` skill. |
 
 Fetch any of these from:
 `https://raw.githubusercontent.com/arivodeaux/startup/main/catalog/<file>`
