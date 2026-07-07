@@ -134,9 +134,12 @@ if [ -n "$PROFILE" ]; then
     fi
   fi
   if [ "$OK" = 1 ]; then
-    # 4a. Overlay bootstrap (overlay WINS - your CLAUDE.md replaces the generic).
-    [ -d "$PROF/bootstrap" ] && cp -R "$PROF/bootstrap/." "$DEST/" 2>/dev/null || true
-    echo "  overlay applied (your CLAUDE.md and files win)"
+    # 4a. Overlay bootstrap - FULL mode only (replaces the generic base CLAUDE.md).
+    #     In libraries mode the repo keeps its own files, so this is skipped.
+    if [ "$MODE" = "full" ] && [ -d "$PROF/bootstrap" ]; then
+      cp -R "$PROF/bootstrap/." "$DEST/" 2>/dev/null || true
+      echo "  overlay applied (your CLAUDE.md and files win)"
+    fi
     # 4b. Secrets loader: generic hook (public) + your kit (private).
     if [ -f "$PROF/secrets-kit.env" ]; then
       mkdir -p "$DEST/.claude/hooks"
