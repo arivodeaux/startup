@@ -1,0 +1,31 @@
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Secrets (each project keeps its own .env, never committed)
+.env
+.env.*
+!.env.example
+
+# Common per-project dependency and build artifacts
+# Projects also carry their own .gitignore; these are repo-wide safety nets.
+**/node_modules/
+**/.venv/
+**/venv/
+**/__pycache__/
+**/dist/
+**/build/
+**/.wrangler/
+**/.next/
+**/*.log
+
+# Per-project scratch space is never committed
+**/scratch/
+
+# Subagent-driven-development progress ledger (local coordinator scratch)
+.superpowers/
