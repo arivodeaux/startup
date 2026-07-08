@@ -142,11 +142,14 @@ mkdir -p "$DEST/.claude"
 MK_NAME="$MARKETPLACE" MK_REPO="$HUB_REPO" MK_PLUGINS="$PLUGINS" merge_settings
 echo "  public marketplace registered"
 
-# Gate script for find-building-blocks (both modes), and the plan-step block.
-mkdir -p "$DEST/.claude/bin"
+# Gate script + a local copy of the catalogs (so the gate works offline and for
+# private hubs, where raw.githubusercontent.com is not fetchable). Re-connecting
+# refreshes them. Then the plan-step block.
+mkdir -p "$DEST/.claude/bin" "$DEST/.claude/catalog"
 cp "$HUB/bin/catalog-search.sh" "$DEST/.claude/bin/catalog-search.sh" 2>/dev/null || true
 chmod +x "$DEST/.claude/bin/catalog-search.sh" 2>/dev/null || true
-echo "  gate script installed (.claude/bin/catalog-search.sh)"
+cp "$HUB"/catalog/*.md "$DEST/.claude/catalog/" 2>/dev/null || true
+echo "  gate script + catalogs installed (.claude/bin, .claude/catalog)"
 ensure_block
 
 # 4. Private overlay (optional): CLAUDE.md override, private marketplace, secrets.

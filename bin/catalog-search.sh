@@ -29,8 +29,15 @@ TOKENS="$(printf '%s' "$GOAL" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9' ' ' 
   | while read -r w; do case "$STOP" in *" $w "*) ;; *) printf '%s ' "$w";; esac; done)"
 [ -z "${TOKENS// }" ] && { echo "SKIP no meaningful terms in goal"; exit 10; }
 
-# --- locate catalogs: local dir, else fetch from the hub ---
+# --- locate catalogs: explicit dir, local copy next to the script, else fetch ---
 CLEAN=""
+if [ -z "${CATALOG_DIR:-}" ]; then
+  sd="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd || true)"
+  # connect.sh installs catalogs at .claude/catalog (sibling of .claude/bin)
+  for cand in "$sd/../catalog" "$sd/catalog"; do
+    [ -d "$cand" ] && CATALOG_DIR="$cand" && break
+  done
+fi
 if [ -n "${CATALOG_DIR:-}" ] && [ -d "$CATALOG_DIR" ]; then
   FILES=("$CATALOG_DIR"/*.md)
 else
