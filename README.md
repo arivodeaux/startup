@@ -36,6 +36,23 @@ curl -fsSL .../connect.sh | bash -s -- --append
 Then open the repo in Claude Code and trust the folder when prompted; the hub
 skills install once. Updates to the hub reach every connected repo.
 
+### One memorable command
+
+Add this once to your shell profile (`~/.zshrc` / `~/.bashrc`):
+
+```bash
+startup() { curl -fsSL https://raw.githubusercontent.com/arivodeaux/startup/main/connect.sh | bash -s -- "$@"; }
+```
+
+Then from inside any repo (or the Claude Code terminal):
+
+```bash
+startup                                      # interactive: pick full or append
+startup --full --profile arivodeaux/startup-private   # you, fresh repo
+startup --append --profile arivodeaux/startup-private # you, existing repo
+startup --full                               # anyone, public base only
+```
+
 ## Find-building-blocks (plan-phase, demand-driven)
 
 The point of the catalogs is not to browse them - it's for Claude to notice,
