@@ -24,9 +24,11 @@ GOAL="$*"; [ -z "$GOAL" ] && GOAL="$(cat)"
 
 # --- tokenize: lowercase, split on non-alnum, keep len>=4, drop stopwords ---
 STOP=" the and for with from into your you this that build make create creating using use want need project projects app apps application api apis tool tools system data code new get set run add feature which what would could should have will your our their about over some more most only just like into onto than then them they when where while your yours against analyze analyse based across before after within various provide provides provided other another around through between also into help helps using used able allow allows something anything everything "
+# Filter in a single awk pass (keep len>=4 tokens not in the stopword list).
+# Avoids `case` inside $(...) which breaks under macOS's bash 3.2 parser.
 TOKENS="$(printf '%s' "$GOAL" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9' ' ' \
-  | tr ' ' '\n' | awk 'length($0)>=4' | sort -u \
-  | while read -r w; do case "$STOP" in *" $w "*) ;; *) printf '%s ' "$w";; esac; done)"
+  | tr ' ' '\n' | awk -v stop="$STOP" 'length>=4 && index(stop," "$0" ")==0' \
+  | sort -u | tr '\n' ' ')"
 [ -z "${TOKENS// }" ] && { echo "SKIP no meaningful terms in goal"; exit 10; }
 
 # --- locate catalogs: explicit dir, local copy next to the script, else fetch ---
