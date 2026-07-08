@@ -210,6 +210,16 @@ For any task with 3 or more steps or an architectural decision:
 
 If something goes sideways mid-build: STOP and re-plan. Do not keep pushing.
 
+<!-- startup-hub:begin (managed by connect.sh; delete this block to opt out) -->
+### Building-blocks check (startup hub)
+
+During the plan phase, before finalizing a plan for a NEW build, invoke the
+find-building-blocks skill once. It runs a cheap deterministic gate and only
+searches the hub catalogs (existing code / APIs / libraries) when there is a
+basis, so it costs almost nothing when nothing matches. Skip for docs, bugfixes,
+and trivial tasks.
+<!-- startup-hub:end -->
+
 ---
 
 ## Workflow: Blocker Handling

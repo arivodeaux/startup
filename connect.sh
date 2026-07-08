@@ -2,10 +2,11 @@
 # connect.sh - wire the current repo into the startup hub. MIT licensed.
 #
 # Modes (chosen on first call):
-#   full       fresh repo: copy ESSENTIALS (CLAUDE.md, STATE.md, tasks/, .gitignore)
-#              without clobbering, AND register the skill marketplace.
-#   libraries  already-initialized repo: register the marketplace and drop a
-#              resource index only. Touches none of your existing files.
+#   full     fresh repo: copy ESSENTIALS (CLAUDE.md, STATE.md, tasks/, .gitignore)
+#            without clobbering, register the skill marketplace + the gate script.
+#   append   existing repo: register the marketplace + gate script, and APPEND one
+#            small marked block to your CLAUDE.md (the plan-phase trigger). Never
+#            rewrites your files; creates a minimal CLAUDE.md only if none exists.
 #
 # Private overlay (optional):
 #   --profile owner/repo   after the public base, apply your private overlay:
@@ -35,7 +36,7 @@ usage() { sed -n '2,26p' "${BASH_SOURCE[0]:-$0}" 2>/dev/null | sed 's/^# \{0,1\}
 while [ $# -gt 0 ]; do
   case "$1" in
     --full) MODE="full"; shift ;;
-    --libraries|--libs) MODE="libraries"; shift ;;
+    --append|--libraries|--libs) MODE="append"; shift ;;
     --mode) MODE="${2:-}"; shift 2 ;;
     --mode=*) MODE="${1#--mode=}"; shift ;;
     --profile) PROFILE="${2:-}"; shift 2 ;;
@@ -44,7 +45,7 @@ while [ $# -gt 0 ]; do
     *) echo "unknown argument: $1" >&2; usage 1 ;;
   esac
 done
-[ "$MODE" = "libs" ] && MODE="libraries"
+case "$MODE" in libs|libraries) MODE="append" ;; esac
 
 # merge helper: adds a marketplace, enables plugins, and/or adds a SessionStart
 # hook to .claude/settings.json without clobbering existing keys. Driven by env.
@@ -74,6 +75,29 @@ json.dump(data, open(path, "w"), indent=2); open(path, "a").write("\n")
 PY
 }
 
+# Append the plan-step block to CLAUDE.md if its marker is absent (idempotent).
+# Creates a minimal CLAUDE.md if the repo has none. Never rewrites existing text.
+ensure_block() {
+  local f="$DEST/CLAUDE.md"
+  if [ -f "$f" ] && grep -q "startup-hub:begin" "$f"; then
+    echo "  CLAUDE.md plan-step already present (left as-is)"; return
+  fi
+  [ -f "$f" ] || printf '# CLAUDE.md\n\nProject config.\n' > "$f"
+  cat >> "$f" <<'BLOCK'
+
+<!-- startup-hub:begin (managed by connect.sh; delete this block to opt out) -->
+### Building-blocks check (startup hub)
+
+During the plan phase, before finalizing a plan for a NEW build, invoke the
+find-building-blocks skill once. It runs a cheap deterministic gate and only
+searches the hub catalogs (existing code / APIs / libraries) when there is a
+basis, so it costs almost nothing when nothing matches. Skip for docs, bugfixes,
+and trivial tasks.
+<!-- startup-hub:end -->
+BLOCK
+  echo "  appended plan-step block to CLAUDE.md"
+}
+
 # 1. Locate the hub (a local clone this script sits in, else a shallow clone).
 SELF_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd || true)"
 if [ -n "$SELF_DIR" ] && [ -d "$SELF_DIR/bootstrap" ]; then
@@ -91,19 +115,19 @@ fi
 
 # 2. Choose mode if not given (smart default from whether the repo is initialized).
 if [ -z "$MODE" ]; then
-  if [ -f "$DEST/CLAUDE.md" ] || [ -f "$DEST/STATE.md" ]; then default="libraries"; else default="full"; fi
+  if [ -f "$DEST/CLAUDE.md" ] || [ -f "$DEST/STATE.md" ]; then default="append"; else default="full"; fi
   if [ -r /dev/tty ]; then
     echo "How should $(basename "$DEST") connect to the ${HUB_REPO} hub?"
-    echo "  1) full       fresh repo: copy essentials (CLAUDE.md, STATE.md, tasks/) + wire in skills"
-    echo "  2) libraries  already set up: wire in skills/catalogs only, leave your files alone"
+    echo "  1) full     fresh repo: copy essentials (CLAUDE.md, STATE.md, tasks/) + wire in skills"
+    echo "  2) append   already set up: wire in skills, append one plan-step block to your CLAUDE.md"
     printf "Choose 1/2 [default: %s]: " "$default"
     read -r choice < /dev/tty || choice=""
     case "$choice" in
-      1|full|f) MODE="full" ;; 2|libraries|libs|l) MODE="libraries" ;;
+      1|full|f) MODE="full" ;; 2|append|a|libraries|libs|l) MODE="append" ;;
       "") MODE="$default" ;; *) echo "unrecognized; using $default"; MODE="$default" ;;
     esac
   else
-    MODE="$default"; echo "non-interactive: defaulting to '$MODE' (pass --full or --libraries)"
+    MODE="$default"; echo "non-interactive: defaulting to '$MODE' (pass --full or --append)"
   fi
 fi
 echo "Mode: $MODE. Hub: $HUB_REPO${PROFILE:+ | Profile: $PROFILE}"
@@ -117,6 +141,13 @@ fi
 mkdir -p "$DEST/.claude"
 MK_NAME="$MARKETPLACE" MK_REPO="$HUB_REPO" MK_PLUGINS="$PLUGINS" merge_settings
 echo "  public marketplace registered"
+
+# Gate script for find-building-blocks (both modes), and the plan-step block.
+mkdir -p "$DEST/.claude/bin"
+cp "$HUB/bin/catalog-search.sh" "$DEST/.claude/bin/catalog-search.sh" 2>/dev/null || true
+chmod +x "$DEST/.claude/bin/catalog-search.sh" 2>/dev/null || true
+echo "  gate script installed (.claude/bin/catalog-search.sh)"
+ensure_block
 
 # 4. Private overlay (optional): CLAUDE.md override, private marketplace, secrets.
 PRIV_LINE=""
@@ -135,7 +166,7 @@ if [ -n "$PROFILE" ]; then
   fi
   if [ "$OK" = 1 ]; then
     # 4a. Overlay bootstrap - FULL mode only (replaces the generic base CLAUDE.md).
-    #     In libraries mode the repo keeps its own files, so this is skipped.
+    #     In append mode the repo keeps its own files, so this is skipped.
     if [ "$MODE" = "full" ] && [ -d "$PROF/bootstrap" ]; then
       cp -R "$PROF/bootstrap/." "$DEST/" 2>/dev/null || true
       echo "  overlay applied (your CLAUDE.md and files win)"
@@ -174,12 +205,14 @@ Skills and catalogs live in the hub(s) and are pulled on demand.
 
 ## Skills (auto-enabled via .claude/settings.json)
 - \`sandbox-conventions\`: retire-project, next-free-port, deploy-cloudflare
-- \`resource-catalog\`: browse the hub's catalogs
+- \`resource-catalog\`: find-building-blocks (plan-phase), browse-resources
 
-Trust this folder when Claude Code prompts, and the plugins install once.
+During planning of a new build, the find-building-blocks skill runs a cheap
+deterministic gate (.claude/bin/catalog-search.sh) and only searches when there
+is a basis. Trust this folder when Claude Code prompts, and the plugins install once.
 
-## Catalogs (browse with the \`browse-resources\` skill)
-Frontend, backend, component libraries, free APIs, open-source & government repos.
+## Catalogs
+Frontend, backend, component libraries, free APIs, open-source & government repos, federal OSS.
 Raw: https://raw.githubusercontent.com/${HUB_REPO}/${HUB_BRANCH}/catalog/INDEX.md
 ${PRIV_LINE}
 

@@ -1,7 +1,9 @@
 # Catalog index
 
-Curated reference lists, maintained centrally, pulled on demand. Each file is a
-plain table you can extend with a PR-free commit.
+Curated reference lists, maintained centrally. The `find-building-blocks` skill
+greps these during planning (via `bin/catalog-search.sh`). Each entry is one
+grep-friendly line: `name | type | tags | description | access | url`. Drop a new
+`*.md` file here and it is automatically in scope - no wiring.
 
 | File | What's in it |
 | --- | --- |

@@ -1,24 +1,17 @@
 # Component libraries
 
-UI kits and design systems. Most pair with Tailwind and React/Next.
+UI kits, design systems, icons. Schema: `name | type | tags | description | access | url`
 
-| Library | Style | Notes | Link |
-| --- | --- | --- | --- |
-| shadcn/ui | Unstyled + Tailwind, copy-in | You own the code; not an npm dep. Great default. | https://ui.shadcn.com |
-| Radix UI | Unstyled primitives | Accessible behavior, bring your own styles. | https://www.radix-ui.com |
-| Headless UI | Unstyled primitives | From the Tailwind team. | https://headlessui.com |
-| Park UI | Styled on Ark UI + Panda | Cross-framework. | https://park-ui.com |
-| Mantine | Batteries-included | Hooks + components, good DX. | https://mantine.dev |
-| Chakra UI | Styled, themeable | Fast to prototype. | https://chakra-ui.com |
-| Material UI (MUI) | Material Design | Mature, large. | https://mui.com |
-| Ark UI | Headless, multi-framework | React/Vue/Solid. | https://ark-ui.com |
-| Tremor | Dashboard/chart blocks | Analytics UIs on React + Tailwind. | https://tremor.so |
-| Aceternity UI | Animated marketing blocks | Flashy landing sections, pairs with Framer Motion. | https://ui.aceternity.com |
-
-## Icons
-
-| Set | Notes | Link |
-| --- | --- | --- |
-| Lucide | Clean, huge set, React-ready. | https://lucide.dev |
-| Heroicons | From Tailwind team. | https://heroicons.com |
-| Phosphor | Flexible weights. | https://phosphoricons.com |
+shadcn/ui | component | ui tailwind react copy-in unstyled components | copy-in Tailwind components, you own the code | free | https://ui.shadcn.com
+Radix UI | component | ui primitives accessible unstyled react | accessible unstyled primitives | free | https://www.radix-ui.com
+Headless UI | component | ui primitives unstyled tailwind react | unstyled primitives from Tailwind team | free | https://headlessui.com
+Park UI | component | ui styled ark panda cross-framework | styled on Ark UI + Panda | free | https://park-ui.com
+Mantine | component | ui react hooks components batteries | batteries-included hooks + components | free | https://mantine.dev
+Chakra UI | component | ui react styled themeable components | styled themeable components | free | https://chakra-ui.com
+Material UI (MUI) | component | ui react material design components | Material Design components | free | https://mui.com
+Ark UI | component | ui headless multi-framework react vue solid | headless multi-framework primitives | free | https://ark-ui.com
+Tremor | component | ui dashboard charts analytics react tailwind | dashboard/chart blocks for analytics UIs | free | https://tremor.so
+Aceternity UI | component | ui animated marketing landing motion | animated marketing blocks | free | https://ui.aceternity.com
+Lucide | component | icons svg react ui | clean icon set, React-ready | free | https://lucide.dev
+Heroicons | component | icons svg tailwind ui | icons from Tailwind team | free | https://heroicons.com
+Phosphor | component | icons svg weights ui | flexible-weight icons | free | https://phosphoricons.com

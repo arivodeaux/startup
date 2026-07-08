@@ -1,79 +1,72 @@
-# Federal open-source & creative integrations
+# Federal open source
 
-Not a repo list - a list of **non-obvious things to build** with federal open
-source. Most are CC0 / MIT / Apache-2.0 (public-domain-ish), zero cost. Each
-entry: asset (repo, license) -> the creative application -> difficulty.
+Complete list, raw facts only (no editorializing - the creative repurpose is
+generated on demand by the find-building-blocks skill, not pre-written here).
+Most are CC0 / MIT / Apache-2.0. Schema:
+`name | type | tags | description | access | url`
+- type: repo | library | api | dataset
+- access: license (mit, apache-2.0, cc0, public-domain) or api access
 
-Discovery nodes: Code.gov (custom gov software), Data.gov / api.data.gov
-(datasets + APIs), and official agency GitHub orgs (GSA, EPA, VA, SEC, NASA,
-NIST, USGS, CISA, LLNL, Sandia, NREL, LANL).
+## AI tooling, eval, agent security
 
-Highest-ROI move: wrap a deterministic federal API as an **MCP server** so an
-agent gets real-time access to the economic/physical world.
+AVIATOR | repo | ai security vulnerability rag lora cwe red-team | LLM vulnerability-injection framework | mit | https://github.com/usnistgov/AVIATOR
+caisi-cyber-evals | repo | ai eval cyber benchmark cve inspect | cyber benchmarks (CVE-Bench, Cybench) | public-domain | https://github.com/usnistgov/caisi-cyber-evals
+Dioptra | repo | ai risk drift bias testing nist-rmf | AI risk test platform, REST + Python | public-domain | https://github.com/usnistgov/dioptra
+Ghidra | repo | reverse-engineering binary decompile sre | enterprise reverse-engineering framework | apache-2.0 | https://github.com/nationalsecurityagency/ghidra
+TrojAI | repo | ai security trojan ml-weights detection | detect Trojan triggers in ML weights | public-domain | https://github.com/usnistgov/trojai
+MuyGPyS | library | gaussian-process optimization forecasting math | scalable GP optimization (Python) | mit | https://github.com/LLNL/MuyGPyS
+pyttb | library | tensor decomposition math quantization | tensor toolbox (dense/sparse) | open-source | https://github.com/sandialabs/pyttb
 
-## Cluster 1 - AI tooling, eval, agent security
+## Fintech, economic data
 
-- **AVIATOR** (usnistgov/AVIATOR, MIT) - RAG+LoRA framework that injects realistic CWE vulnerabilities into code. Build an autonomous red-team agent that continuously probes your own pipelines. Difficulty: high.
-- **caisi-cyber-evals** (usnistgov/caisi-cyber-evals, PD) - packaged cyber benchmarks (CVE-Bench, Cybench) on the Inspect framework. Build an internal benchmark server that scores every new agent before it gets prod keys. Difficulty: moderate.
-- **Dioptra** (usnistgov/dioptra, PD) - NIST AI-RMF test platform, REST API + Python client. Wrap into a Notion "CEO dashboard" tracking agent drift/bias/degradation over time. Difficulty: low.
-- **Ghidra** (nationalsecurityagency/ghidra, Apache-2.0) - enterprise reverse-engineering. Build an MCP server over its headless analyzer so Claude decompiles/maps unknown binaries. Difficulty: very high.
-- **TrojAI** (usnistgov/trojai, PD) - detects hidden Trojan triggers in ML weights. Gate every downloaded open-weight model through it before deployment. Difficulty: moderate.
-- **MuyGPyS** (LLNL/MuyGPyS, MIT) - scalable Gaussian-process optimization. Forecast your own compute/token spend and auto-throttle non-essential agents at peak pricing. Difficulty: moderate.
-- **pyttb** (sandialabs/pyttb, OSS) - tensor toolbox. Build a weight-pruning/quantization pipeline (low-rank decomposition) to speed local LLM inference. Difficulty: very high.
+edgartools | library | sec edgar filings finance fintech dataframes claude | SEC EDGAR to typed objects, ships Claude skill | mit | https://github.com/dgunning/edgartools
+sec-parser | library | sec edgar filings semantic parsing finance | filings to semantic element trees | open-source | https://github.com/alphanome-ai/sec-parser
+FedFred | library | fred macro economic finance async polars | async FRED client (macro data) | open-source | https://github.com/nikhilxsunder/fedfred
+Treasury Fiscal Data | api | treasury debt fiscal finance gov | national debt / spending data | public-domain | https://fiscaldata.treasury.gov/api-documentation
+OpenFEC | api | campaign-finance elections pac politics | campaign finance data | public-domain | https://github.com/fecgov/openfec
+regulations-parser | library | regulations federal-register compliance legal xml | Federal Register XML to versioned JSON | public-domain | https://github.com/cfpb/regulations-parser
+patent_client | library | patents uspto ip filings | USPTO Open Data interface | open-source | https://github.com/parkerhancock/patent_client
+pytidycensus | library | census demographics geo income | Census API + geometry | open-source | https://github.com/mmann1123/pytidycensus
 
-## Cluster 2 - Fintech, economic data, algo research
+## Planetary / geo data (great MCP targets)
 
-- **edgartools** (dgunning/edgartools, MIT) - unmetered SEC EDGAR -> typed objects/DataFrames, ships a native Claude skill (`pip install "edgartools[ai]"`). Autonomous analyst that watches 8-K/10-K filings and emits signals to Notion. Difficulty: very low. **[best first pick]**
-- **sec-parser** (alphanome-ai/sec-parser, OSS) - filings -> semantic element trees. Build a Neo4j knowledge graph of exec comp / contracts / holdings for multi-hop reasoning. Difficulty: moderate.
-- **FedFred** (nikhilxsunder/fedfred, OSS) - async FRED client, caching, Polars. Cross-reference SEC filings against macro indicators in a non-blocking pipeline. Difficulty: low.
-- **Treasury Fiscal Data** (api, PD) - debt-to-the-penny, spending. MCP server that flags short-term bond/yield moves off daily debt swings. Difficulty: low.
-- **OpenFEC** (fecgov/openfec, PD) - campaign finance API. Agent watching PAC-spend spikes to anticipate regulatory/contract shifts. Difficulty: moderate.
-- **regulations-parser** (cfpb/regulations-parser, PD) - Federal Register XML -> versioned JSON diffs. "Regulatory impact agent" that prices compliance cost of new rules per sector. Difficulty: high.
-- **patent_client** (parkerhancock/patent_client, OSS) - USPTO ODP interface. Scan new filings in a tech vector, cross-ref micro-cap assignees for early acquisition targets. Difficulty: moderate.
-- **pytidycensus** (mmann1123/pytidycensus, OSS) - Census API + geometry. Correlate regional income shifts with REIT performance. Difficulty: low.
+earthquake-processing-formats | library | seismic earthquake usgs geo streaming mcp | NEIC/ComCat seismic formats | public-domain | https://github.com/usgs/earthquake-processing-formats
+NWS API | api | weather forecast gridpoint geojson gov geo | 2.5km gridpoint forecasts + alerts | public-domain | https://www.weather.gov/documentation/services-web-api
+pyaqsapi | library | air-quality epa environment pollution | EPA air quality (AQS Data Mart) | open-source | https://github.com/USEPA/pyaqsapi
+cam-api-examples | repo | emissions energy epa clean-air | Clean Air Markets hourly emissions | public-domain | https://github.com/USEPA/cam-api-examples
+water-datapreptools | repo | hydrology dem watershed usgs geo gis | hydro-enforce digital elevation models | public-domain | https://github.com/usgs/water-datapreptools
+Federal Register API | api | regulations rules compliance legal gov | daily gov journal, no key | public-domain | https://www.federalregister.gov/developers/documentation/api/v1
 
-## Cluster 3 - Planetary data -> MCP servers
+## Ops, identity, infra
 
-- **earthquake-processing-formats** (usgs, PD) - NEIC/ComCat seismic. MCP server streaming hypocenter/amplitude data on every event; great async/event-driven starter. Difficulty: moderate.
-- **NWS API** (weather.gov, PD) - 2.5km gridpoint GeoJSON forecasts + CAP alerts. MCP wrapper so agents reschedule/reroute on real weather. Difficulty: low.
-- **pyaqsapi** (USEPA/pyaqsapi, OSS) - EPA air quality (AQS Data Mart). Correlate local air-quality with industrial output as an MCP tool. Difficulty: low.
-- **cam-api-examples** (USEPA/cam-api-examples, PD) - Clean Air Markets hourly emissions. Stream to Postgres for energy-sector modeling. Difficulty: moderate.
-- **water-datapreptools** (usgs, PD) - hydro-enforce DEMs. Procedurally generate watershed simulations for GIS. Difficulty: high.
-- **Federal Register API** (federalregister.gov, PD, no key) - daily gov journal. Rule-observer agent polling specific agencies (FAA, SEC) to trigger compliance updates. Difficulty: low.
+Login.gov | repo | auth identity login sso ops security | full auth stack source | cc0 | https://github.com/GSA-TTS/identity-site
+contact-congress | repo | congress advocacy crm routing civic | congressional contact/routing schema | public-domain | https://github.com/unitedstates/contact-congress
+search-gov | repo | search index semantic infrastructure | federal search engine source | public-domain | https://github.com/GSA/search-gov
+uswds-hugo | repo | static-site hugo web accessible publishing | gov accessible static-site template | public-domain | https://github.com/GSA/uswds-hugo
+Malcolm | repo | network security pcap zeek suricata monitoring egress | network traffic analysis suite | permissive | https://github.com/cisagov/malcolm
+vets-api-clients | repo | va facilities health benefits fhir | VA Lighthouse API clients | open-source | https://github.com/department-of-veterans-affairs/vets-api-clients
 
-## Cluster 4 - Ops, identity, infrastructure plumbing
+## Simulation, games, physics
 
-- **Login.gov** (GSA-TTS/identity-site, CC0) - full auth stack source. Stand up a sandbox auth gateway for internal tools instead of rolling your own. Difficulty: moderate.
-- **contact-congress** (unitedstates/contact-congress, PD) - YAML schema for congressional contact/routing. Auto-format+route advocacy correspondence from a CRM. Difficulty: low.
-- **search-gov** (GSA/search-gov, PD) - federal search engine source. Self-host a semantic index over your Notion exports + pipelines. Difficulty: high.
-- **uswds-hugo** (GSA/uswds-hugo, PD) - accessible gov static-site template. Notion -> Markdown -> Hugo publishing pipeline. Difficulty: low.
-- **Malcolm** (cisagov/malcolm, permissive) - network traffic analysis (PCAP/Zeek/Suricata -> OpenSearch). Passively monitor egress so compromised agents can't exfiltrate keys. Difficulty: moderate.
-- **vets-api-clients** (VA, OSS) - Lighthouse facility/health/benefits APIs. Verify facility status/hours for event logistics without scraping. Difficulty: low.
+MuSCAT | repo | spacecraft orbital simulation physics rl game | spacecraft dynamics engine | open-source | https://github.com/nasa/muscat
+iMETRO | repo | robotics ros2 mujoco zero-g rl embodied | zero-g robotics sim (ROS2+MuJoCo) | open-source | https://github.com/NASA-JSC-Robotics/iMETRO
+Tensegrity Robotics Toolkit | repo | robotics tensegrity physics locomotion sim | tensegrity robot simulator | open-source | https://github.com/NASA-Tensegrity-Robotics-Toolkit/Simulator
+SAM / ssc | repo | solar renewable energy physics finance sim | System Advisor Model core | open-source | https://github.com/NREL/ssc
+pyQAOA | library | quantum optimization physics simulation math | QAOA quantum simulation | open-source | https://github.com/sandialabs/pyQAOA
+SSAPy | library | satellite orbit tle space visualization | space situational awareness | open-source | https://github.com/llnl/SSAPy
+pyPICfusion | library | fusion particle physics plasma simulation | particle-in-cell fusion calcs | gnu | https://github.com/LLNL/pyPICfusion
 
-## Cluster 5 - Simulation, games, hard physics sandboxes
+## Cognitive / systems modeling
 
-- **MuSCAT** (nasa/muscat, OSS) - spacecraft dynamics engine. Core physics for a space-strategy game or an RL navigation trainer. Difficulty: high.
-- **iMETRO** (NASA-JSC-Robotics/iMETRO, OSS) - ROS2 + MuJoCo zero-g robotics. Train RL control policies in zero gravity, no hardware. Difficulty: very high.
-- **Tensegrity Robotics Toolkit** (NASA, OSS) - tensegrity physics sim (C++/Pybind11). Evolve novel locomotion policies over uneven terrain. Difficulty: moderate.
-- **SAM / ssc** (NREL/ssc, OSS) - renewable-energy physics+finance model. "Solar tycoon" sim engine, or size an off-grid rig for a local-LLM server. Difficulty: moderate.
-- **pyQAOA** (sandialabs/pyQAOA, OSS) - quantum optimization sim. Educational visualizers of objective-function minimization. Difficulty: very high.
-- **SSAPy** (llnl/SSAPy, OSS) - space situational awareness. Parse live TLE data into a real-time 3D LEO-congestion dashboard. Difficulty: moderate.
-- **pyPICfusion** (LLNL/pyPICfusion, GNU) - particle-in-cell fusion calcs. Abstract into a particle-physics game where RL agents maximize fusion yield. Difficulty: moderate.
+SEPIA | library | statistical-learning gaussian-process physics simulation | physics-informed statistical learning | open-source | https://github.com/lanl/SEPIA
+WNTR | library | water-network resilience simulation infrastructure risk | water distribution resilience sim | open-source | https://github.com/USEPA/WNTR
+unitedstates/congress | repo | legislation congress voting civic data topology | bulk legislative data | public-domain | https://github.com/unitedstates/congress
 
-## Cluster 6 - Cognitive / systems modeling
+## Notable extras
 
-- **SEPIA** (lanl/SEPIA, OSS) - physics-informed statistical learning (GPMSA). Agent builds rigorous mental models of physical processes, self-adjusting to variance. Difficulty: very high.
-- **WNTR** (USEPA/WNTR, OSS) - water-network resilience sim. Model how cascading utility outages hit your data-center/server locations for contingency plans. Difficulty: moderate.
-- **unitedstates/congress** (PD) - bulk legislative data (bills, amendments, roll calls). Topological map of voting patterns / hidden alliances / bottlenecks. Difficulty: moderate.
-
-## Notable extras (from the 120-repo appendix)
-
-- **LBNL-ETA/EnergyPlus-MCP** - a *native MCP server* (35 tools) for building-energy simulation. Reference for MCP wrapping.
-- **NREL/elm** - utilities for fine-tuning LLMs for energy research.
-- **nasa/progpy** - prognostics / remaining-useful-life framework.
-- **Trusted-AI/adversarial-robustness-toolbox** (DARPA-linked) - ML security library.
-- **Vaquill-AI/awesome-legaltech** - curated civic/legal endpoints adaptable to MCP.
-- **Smithsonian/smithsonian-openaccess** - open museum metadata (CC0) for creative/generative projects.
-
-To extend: append rows here or split a cluster into its own file. Keep the
-"creative application" phrasing - that is what makes suggestions non-obvious.
+EnergyPlus-MCP | repo | mcp energy building simulation | native MCP server (35 tools) for EnergyPlus | open-source | https://github.com/LBNL-ETA/EnergyPlus-MCP
+NREL/elm | library | llm fine-tuning energy research | LLM fine-tuning for energy | open-source | https://github.com/NREL/elm
+progpy | library | prognostics remaining-useful-life predictive | prognostics / RUL framework | open-source | https://github.com/nasa/progpy
+adversarial-robustness-toolbox | library | ml security adversarial defense | ML security library | mit | https://github.com/Trusted-AI/adversarial-robustness-toolbox
+awesome-legaltech | repo | legal civic regulatory endpoints mcp index | curated civic/legal endpoints | open-source | https://github.com/Vaquill-AI/awesome-legaltech
+smithsonian-openaccess | dataset | museum art metadata cc0 creative generative | open museum metadata (CC0) | cc0 | https://github.com/Smithsonian/smithsonian-openaccess
