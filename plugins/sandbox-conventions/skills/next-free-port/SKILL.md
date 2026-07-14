@@ -19,6 +19,6 @@ PROJECTS.md.
 2. Use that port for the project (its `[dev]` port, dev server, etc.) and record
    it in the project's `PROJECTS.md` row and README so it stays claimed.
 
-Note: `new-project.sh --type cloudflare-worker` already calls this and fills the
-port in automatically. Use the skill directly for basic/python projects that
-decide to serve, or to check availability.
+Note: `new-project.sh` registers new projects with Port `none`; it does not
+claim a port. Use this skill whenever a project decides to serve, or to check
+availability. Archived rows do not hold their port (live rows only).
