@@ -1,6 +1,6 @@
 {
   "name": "sandbox-conventions",
   "description": "Project lifecycle skills for the sandbox convention: retire a project, claim a free port, deploy to Cloudflare behind the Tier-3 human gate.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": { "name": "arivodeaux" }
 }

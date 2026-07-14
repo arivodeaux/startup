@@ -1,6 +1,6 @@
 {
   "name": "resource-catalog",
   "description": "Browse the startup hub's live reference catalogs (frontend, backend, component libraries, free APIs, open-source and government repos) fetched fresh from the hub.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": { "name": "arivodeaux" }
 }
