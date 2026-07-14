@@ -11,14 +11,24 @@ welcome, but only ones that survive scrutiny reach the plan.
 
 ## 0. Cheap gate first (deterministic, always)
 
-Run the gate with a one-line version of the user's goal:
+Run the gate with a one-line version of the user's goal. Try these in order,
+first one that exists wins:
 
-```
-bash "$CLAUDE_PROJECT_DIR/.claude/bin/catalog-search.sh" "<one-line goal>"
-```
+1. The project's own install (freshest, has local catalogs; put there by
+   connect.sh):
+   ```
+   bash "$CLAUDE_PROJECT_DIR/.claude/bin/catalog-search.sh" "<one-line goal>"
+   ```
+2. The copy packaged with this skill (always present; fetches catalogs from
+   the hub):
+   ```
+   bash "<this skill's base directory>/scripts/catalog-search.sh" "<one-line goal>"
+   ```
+3. Last resort, fetch and run:
+   `curl -fsSL https://raw.githubusercontent.com/arivodeaux/startup/main/bin/catalog-search.sh | bash -s -- "<goal>"`
 
-(If that path is missing, fetch and run it:
-`curl -fsSL https://raw.githubusercontent.com/arivodeaux/startup/main/bin/catalog-search.sh | bash -s -- "<goal>"`.)
+(The packaged copy is a byte-identical mirror of `bin/catalog-search.sh` in the
+hub repo; when updating one, update both.)
 
 - Prints `SKIP` (exit 10) -> **stop.** No sub-agents. At most one line ("no catalog match; building from scratch"). This is the common case for tasks with no external building blocks, and it must stay cheap.
 - Prints `PROCEED` -> the printed candidate lines are your **seed**. Continue.
