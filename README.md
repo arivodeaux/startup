@@ -7,6 +7,23 @@ else is indexed and pulled on demand.**
 
 Open source (MIT). Fork it, point it at your own hub, make it yours.
 
+## Machine setup (one call)
+
+Turn on a fresh machine's global environment before connecting any repo:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/arivodeaux/startup/main/connect.sh | bash -s -- --machine
+```
+
+It installs `~/.claude/CLAUDE.md` from `bootstrap/global/CLAUDE.md` (skipped
+if you already have one there; use `--profile owner/repo` to overlay your own
+fork's version on top) and copies the protocol skills
+(`foreman`, `contrarian-review`, `session-end`, `delivery-lifecycle`) into
+`~/.claude/skills/`. No-clobber rule: if `~/.claude/CLAUDE.md` already exists,
+nothing is overwritten; the candidate is written to
+`~/.claude/CLAUDE.md.hub-new` for you to diff and merge yourself. Safe to
+re-run.
+
 ## Connect a repo (one call)
 
 From the root of any repo:
@@ -89,14 +106,24 @@ own plan workflow for the deterministic trigger:
 
 ```
 bootstrap/              essentials copied into each repo (generic templates)
+  global/CLAUDE.md      machine-wide config, installed once via --machine
+  CLAUDE.md             per-project template, installed per repo
 .claude-plugin/         marketplace.json - the skill index
 plugins/                skills, packaged as plugins, pulled on demand
   sandbox-conventions/  retire-project, next-free-port, deploy-cloudflare
   resource-catalog/     browse-resources (reads the catalogs live)
+  working-protocols/    foreman, contrarian-review, session-end, delivery-lifecycle
 catalog/                curated reference lists (the "menu")
 patterns/               copy-in code snippets
-connect.sh              the one-call bootstrap (full | libraries)
+connect.sh              the one-call bootstrap (--machine | --full | --append)
 ```
+
+**Versions:** project template v4.0, global template v1.0. The split: machine-
+wide rules (identity, guardrails, rigor tiers, working defaults, skill
+routing) live once in `~/.claude/CLAUDE.md`, installed by `--machine`.
+Per-project `CLAUDE.md` carries only the Project Brief and session protocol.
+Shared procedure (delegation, adversarial review, session close, delivery
+lifecycle) lives in on-demand skills, not in either template.
 
 ## Fork it for your own hub
 
