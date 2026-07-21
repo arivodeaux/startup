@@ -48,6 +48,10 @@ Update `STATE.md`: Goal, Status (ready / in-progress / blocked / done), Posture,
 what is Done, ONE concrete Next step, Open questions. Summarize `tasks/blocked.md`
 as a prioritized list if anything is in it.
 
+Continuity check: if this session touched anything a live process depends on,
+confirm it still has at least one redundancy and a written manual runbook
+(`runbooks/`), and flag any gap as a blocker rather than closing over it.
+
 ## 4. Report
 
 Tell the user in a few sentences: what was built or decided, what was proven to

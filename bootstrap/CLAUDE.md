@@ -75,3 +75,4 @@ and trivial tasks.
 | `tasks/todo.md`    | Plan and progress tracker for the current build     |
 | `tasks/lessons.md` | Patterns, mistakes, and discoveries across sessions |
 | `tasks/blocked.md` | Logged blockers for human review at session end     |
+| `runbooks/` (optional) | Manual SOPs for anything a live process depends on |
