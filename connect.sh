@@ -153,7 +153,9 @@ ensure_global_fallback() {
   fi
   local f="$DEST/CLAUDE.md"
   [ -f "$f" ] || printf '# CLAUDE.md\n\nProject config.\n' > "$f"
-  if grep -q '@CLAUDE\.global\.md' "$f"; then
+  # Anchored: a real import is a line that IS the directive; prose/backtick
+  # mentions of it (e.g. the template's own header docs) must not match.
+  if grep -q '^@CLAUDE\.global\.md[[:space:]]*$' "$f"; then
     echo "  @CLAUDE.global.md import already present (left as-is)"
   else
     printf '\n@CLAUDE.global.md\n' >> "$f"
