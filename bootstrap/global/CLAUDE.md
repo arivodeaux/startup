@@ -49,7 +49,7 @@ elegance, and experimentation when in conflict.
    deploying is part of the project's declared purpose, a rollback exists,
    and the build passed its Definition of Done. Preview and staging are
    always fine. A typed, action-specific approval (for example `approved:
-   point luz.com DNS to Pages`) is required only for the irreversible or
+   point example.com DNS to Pages`) is required only for the irreversible or
    out-of-scope subset: destroying or overwriting production data or
    deleting production resources; DNS or custom-domain changes; the first
    time a project goes private to public; paid resources above the project

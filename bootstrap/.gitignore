@@ -11,6 +11,9 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+# Private-overlay secrets manifest installed by connect.sh --profile
+# (key names only, but it originates from the private repo: never commit it)
+.claude/secrets-kit.env
 
 # Common per-project dependency and build artifacts
 # Projects also carry their own .gitignore; these are repo-wide safety nets.
