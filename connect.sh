@@ -324,6 +324,10 @@ if [ -n "$PROFILE" ]; then
       cp "$HUB/patterns/secrets/session-start-secrets.sh" "$DEST/.claude/hooks/session-start-secrets.sh"
       chmod +x "$DEST/.claude/hooks/session-start-secrets.sh"
       cp "$PROF/secrets-kit.env" "$DEST/.claude/secrets-kit.env"
+      # The kit comes from the private repo: make sure this project never
+      # commits it, even in --append mode where bootstrap/.gitignore never ships.
+      grep -q '^\.claude/secrets-kit\.env$' "$DEST/.gitignore" 2>/dev/null || \
+        printf '.claude/secrets-kit.env\n' >> "$DEST/.gitignore"
       HOOK_CMD='$CLAUDE_PROJECT_DIR/.claude/hooks/session-start-secrets.sh' merge_settings
       echo "  secrets loader wired (kit: .claude/secrets-kit.env, values from cloud env)"
     fi
