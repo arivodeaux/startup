@@ -18,10 +18,10 @@
       "category": "reference"
     },
     {
-      "name": "working-protocols",
-      "source": "./plugins/working-protocols",
-      "description": "Portable working protocols: foreman orchestration, contrarian-review adversarial verification, session-end close-out, and delivery-lifecycle session mechanics.",
-      "version": "0.1.0",
+      "name": "os",
+      "source": "./plugins/os",
+      "description": "Working-protocol plugin: foreman orchestration, contrarian review, session-end, delivery-lifecycle, ADHD-shaped reporting, frontend design judgment, the three foreman agents, and two context-discipline hooks.",
+      "version": "5.3.0",
       "category": "workflow"
     }
   ]

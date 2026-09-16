@@ -164,12 +164,18 @@ ensure_global_fallback() {
 }
 
 # --machine mode (2.4): turns on this machine's global environment, independent
-# of any project DEST. Installs ~/.claude/CLAUDE.md (no-clobber) and refreshes
-# the hub's protocol skills under ~/.claude/skills/<name>/. Reuses resolve_profile
-# for the optional overlay (no second fetch path) and the same
-# `startup-hub:managed` marker philosophy as ensure_block's managed block.
+# of any project DEST. Installs ~/.claude/CLAUDE.md and ~/.claude/host.md
+# (both no-clobber: an existing file gets a `.hub-new` candidate next to it
+# instead of being overwritten), then registers the public marketplace and
+# installs/updates the `os` plugin (foreman, contrarian-review, session-end,
+# delivery-lifecycle, report-style-adhd, frontend-design, the three foreman
+# agents, and the context-discipline hooks) so those skills come from the
+# plugin rather than hand-copied files. Reuses resolve_profile for the
+# optional overlay (no second fetch path); if the overlay ships its own
+# install.sh, that runs last and wins wholesale, including swapping the
+# public os plugin for the overlay's private one.
 machine_mode() {
-  mkdir -p "$HOME/.claude/skills"
+  mkdir -p "$HOME/.claude"
   echo "Machine mode: installing hub global config into \$HOME/.claude ($HOME/.claude)"
 
   # -- Global CLAUDE.md: public template, overlay wins wholesale if present. --
@@ -180,6 +186,16 @@ machine_mode() {
     echo "  skip: $HUB/bootstrap/global/CLAUDE.md not in the hub yet (partial hub checkout)"
   fi
 
+  # -- Host limits file: overlay's file for this exact host wins, then the
+  # -- overlay's default.md, then the public default.md.
+  LOCAL_HOSTNAME="$(scutil --get LocalHostName 2>/dev/null || hostname -s)"
+  SRC_HOST=""
+  if [ -f "$HUB/bootstrap/global/hosts/default.md" ]; then
+    SRC_HOST="$HUB/bootstrap/global/hosts/default.md"
+  else
+    echo "  skip: $HUB/bootstrap/global/hosts/default.md not in the hub yet (partial hub checkout)"
+  fi
+
   if [ -n "$PROFILE" ]; then
     if resolve_profile; then
       if [ -f "$PROF/bootstrap/global/CLAUDE.md" ]; then
@@ -188,10 +204,16 @@ machine_mode() {
       else
         echo "  profile ${PROFILE} has no bootstrap/global/CLAUDE.md yet - using public template only"
       fi
+      if [ -f "$PROF/bootstrap/global/hosts/$LOCAL_HOSTNAME.md" ]; then
+        SRC_HOST="$PROF/bootstrap/global/hosts/$LOCAL_HOSTNAME.md"
+        echo "  overlay host file found for $LOCAL_HOSTNAME (${PROFILE_REPO})"
+      elif [ -f "$PROF/bootstrap/global/hosts/default.md" ]; then
+        SRC_HOST="$PROF/bootstrap/global/hosts/default.md"
+        echo "  overlay has no host file for $LOCAL_HOSTNAME - using overlay default.md"
+      fi
     else
       echo "  WARNING: could not load profile $PROFILE; using public global template only" >&2
     fi
-    [ -n "$PTMP" ] && rm -rf "$PTMP"
   fi
 
   GLOBAL_STATUS="skipped (no source available)"
@@ -207,36 +229,54 @@ machine_mode() {
     fi
   fi
 
-  # -- Protocol skills: copy each hub skill to ~/.claude/skills/<name>/ if absent --
-  # -- or still hub-managed (marker present); leave user-modified copies alone. --
-  SKILLS_SRC="$HUB/plugins/working-protocols/skills"
-  SKILLS_DONE=0; SKILLS_SKIPPED=0
-  if [ -d "$SKILLS_SRC" ]; then
-    for name in foreman contrarian-review session-end delivery-lifecycle; do
-      src="$SKILLS_SRC/$name/SKILL.md"
-      if [ ! -f "$src" ]; then
-        echo "  skip skill '$name': source not in the hub yet (partial hub checkout)"
-        SKILLS_SKIPPED=$((SKILLS_SKIPPED + 1))
-        continue
-      fi
-      dest_dir="$HOME/.claude/skills/$name"
-      dest="$dest_dir/SKILL.md"
-      if [ -f "$dest" ] && ! grep -q "startup-hub:managed" "$dest"; then
-        echo "  skip skill '$name': user-modified (marker removed), left alone"
-        SKILLS_SKIPPED=$((SKILLS_SKIPPED + 1))
-        continue
-      fi
-      mkdir -p "$dest_dir"
-      cp -R "$SKILLS_SRC/$name/." "$dest_dir/" 2>/dev/null || cp "$src" "$dest"
-      grep -q "startup-hub:managed" "$dest" || printf '\n<!-- startup-hub:managed -->\n' >> "$dest"
-      echo "  installed/refreshed skill: $name"
-      SKILLS_DONE=$((SKILLS_DONE + 1))
-    done
-  else
-    echo "  skip: $HUB/plugins/working-protocols/skills not in the hub yet (partial hub checkout)"
+  HOST_STATUS="skipped (no source available)"
+  if [ -n "$SRC_HOST" ]; then
+    if [ -f "$HOME/.claude/host.md" ]; then
+      cp "$SRC_HOST" "$HOME/.claude/host.md.hub-new"
+      echo "  ~/.claude/host.md already exists - candidate written to ~/.claude/host.md.hub-new (diff and merge yourself)"
+      HOST_STATUS="candidate written to ~/.claude/host.md.hub-new (existing file left untouched)"
+    else
+      cp "$SRC_HOST" "$HOME/.claude/host.md"
+      echo "  installed ~/.claude/host.md (from $SRC_HOST)"
+      HOST_STATUS="installed"
+    fi
   fi
 
-  echo "Machine setup summary: global CLAUDE.md: $GLOBAL_STATUS | skills installed/refreshed: $SKILLS_DONE, skipped: $SKILLS_SKIPPED"
+  # -- Plugin: register the public marketplace, install the os plugin, then
+  # -- update (install exits 0 on an already-installed plugin without moving
+  # -- it to the marketplace's newer version, so update always runs after it).
+  CLAUDE_BIN=""
+  if command -v claude >/dev/null 2>&1; then
+    CLAUDE_BIN="$(command -v claude)"
+  elif [ -x "$HOME/.local/bin/claude" ]; then
+    CLAUDE_BIN="$HOME/.local/bin/claude"
+  fi
+
+  if [ -n "$CLAUDE_BIN" ]; then
+    "$CLAUDE_BIN" plugin marketplace add "$HUB_REPO" >/dev/null 2>&1 || true
+    "$CLAUDE_BIN" plugin install "os@${MARKETPLACE}" --scope user >/dev/null 2>&1 || true
+    "$CLAUDE_BIN" plugin update >/dev/null 2>&1 || true
+    PLUGIN_STATUS="registered ${HUB_REPO}, installed/updated os@${MARKETPLACE}"
+  else
+    PLUGIN_STATUS="skipped (claude CLI not found on PATH or ~/.local/bin)"
+  fi
+  echo "  plugin: $PLUGIN_STATUS"
+
+  # -- Overlay install.sh, if the profile ships one: runs last, wins wholesale --
+  # -- (it can replace the public os plugin with the overlay's private one). --
+  OVERLAY_INSTALL_STATUS="none"
+  if [ -n "$PROFILE" ] && [ -n "${PROF:-}" ] && [ -x "$PROF/install.sh" ]; then
+    echo "  overlay ships its own install.sh - running it now (it wins wholesale)"
+    if "$PROF/install.sh"; then
+      OVERLAY_INSTALL_STATUS="ran ${PROFILE}/install.sh"
+    else
+      echo "  WARNING: overlay install.sh exited non-zero" >&2
+      OVERLAY_INSTALL_STATUS="ran ${PROFILE}/install.sh, exited non-zero"
+    fi
+  fi
+  [ -n "${PTMP:-}" ] && rm -rf "$PTMP"
+
+  echo "Machine setup summary: global CLAUDE.md: $GLOBAL_STATUS | host.md: $HOST_STATUS | plugin: $PLUGIN_STATUS | overlay install.sh: $OVERLAY_INSTALL_STATUS"
 }
 
 # 1. Locate the hub (a local clone this script sits in, else a shallow clone).

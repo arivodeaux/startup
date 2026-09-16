@@ -1,17 +1,17 @@
 # CLAUDE.md | {{ENTITY}}
 
-# Version: template v4.0 | Last updated: {{DATE}}
+# Version: template v4.1 (Two-Phase start) | Last updated: {{DATE}}
 
 > Reusable per-project template. The only per-project content is the Project
 > Brief, filled once by the init routine, then confirmed by you. Machine-wide
 > rules (identity, guardrails, rigor tiers, working defaults, skill routing)
 > live in `~/.claude/CLAUDE.md`, installed once via
 > `connect.sh --machine`. Do not restate them here; this file only holds what
-> is project-specific. Procedure lives in skills: `delivery-lifecycle`
-> (session start, first-run init, plan-before-build, blockers), `session-end`
-> (lessons distillation, STATE.md update, close-out summary), `foreman`
-> (delegation tickets, statuses, verification, ledger), `contrarian-review`
-> (adversarial QA for high-stakes builds).
+> is project-specific. Procedure lives in skills: `os:delivery-lifecycle`
+> (session start, first-run init, plan-before-build, blockers),
+> `os:session-end` (lessons distillation, STATE.md update, close-out
+> summary), `os:foreman` (delegation tickets, statuses, verification,
+> ledger), `os:contrarian-review` (adversarial QA for high-stakes builds).
 >
 > Standalone fallback: if this machine has no `~/.claude/CLAUDE.md` (for
 > example a cloud or CI checkout), `connect.sh --full` copies
@@ -41,9 +41,10 @@ sets the Rigor Tier (see `~/.claude/CLAUDE.md`).
 ## Session Protocol
 
 - **Start:** run `date +%F`. Read `STATE.md`; if Status is `UNINITIALIZED`,
-  invoke the `delivery-lifecycle` skill and follow its init path, then stop.
-  Otherwise follow that skill's start routine (lessons, blockers, Next line)
-  and continue.
+  invoke the `os:delivery-lifecycle` skill and follow its init path, then
+  stop. Otherwise follow that skill's start routine (lessons, blockers, Next
+  line). A fresh session opens in Phase 1: report status, propose, wait for
+  a Go before any build work (Two-Phase Operating Model, `~/.claude/CLAUDE.md`).
 - **Plan before build** (3+ steps or an architectural call): plan to
   `tasks/todo.md` with checkable items; check in on the plan on the first run
   of a build only. Run `find-building-blocks` once in the plan phase of a NEW
@@ -51,7 +52,7 @@ sets the Rigor Tier (see `~/.claude/CLAUDE.md`).
 - **Blockers:** non-blocking -> log to `tasks/blocked.md` and continue;
   blocking -> ask the minimum viable question. Never halt a session for a
   question that can wait.
-- **End:** invoke the `session-end` skill (lessons, STATE.md, summary).
+- **End:** invoke the `os:session-end` skill (lessons, STATE.md, summary).
 
 <!-- startup-hub:begin (managed by connect.sh; delete this block to opt out) -->
 ### Building-blocks check (startup hub)

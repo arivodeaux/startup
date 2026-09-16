@@ -1,6 +1,0 @@
-{
-  "name": "working-protocols",
-  "description": "Portable working protocols: foreman orchestration, contrarian-review adversarial verification, session-end close-out, and delivery-lifecycle session mechanics.",
-  "version": "0.1.0",
-  "author": { "name": "arivodeaux" }
-}
