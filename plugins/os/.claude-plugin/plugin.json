@@ -1,6 +1,6 @@
 {
   "name": "os",
   "description": "Working-protocol plugin: foreman orchestration, contrarian review, session-end, delivery-lifecycle, ADHD-shaped reporting, frontend design judgment, the three foreman agents, and two context-discipline hooks (report-style injection at session start, oversize-read guard). Pairs with bootstrap/global/CLAUDE.md.",
-  "version": "5.3.0",
+  "version": "5.3.1",
   "author": { "name": "arivodeaux" }
 }

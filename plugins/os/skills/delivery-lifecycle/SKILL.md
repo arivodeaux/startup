@@ -42,11 +42,21 @@ project, and waits for its own Go every time.
 
 ## Plan before build
 
-For any task with 3+ steps or an architectural call: write the plan to
-`tasks/todo.md` with checkable items, check in on the plan only on the first run
-of a build, mark items as you go, add a brief review at the end. Run
-`find-building-blocks` once in the plan phase of a NEW build. If a build goes
-sideways mid-run: stop and re-plan, do not keep pushing.
+For any task with 3+ steps or an architectural call:
+
+1. Draft the plan to `tasks/todo.md` (or `tasks/plans/YYYY-MM-DD-<slug>.md`
+   where the project uses plan files) with checkable items.
+2. Building-blocks gate, mandatory on the first plan of a NEW build (a new
+   component, integration, app, or workflow; not a fix or a continuation):
+   invoke `resource-catalog:find-building-blocks` with the plan's one-line
+   goal BEFORE finalizing the plan. It runs a free grep gate over the hub
+   catalogs (existing code, APIs, libraries, components) and only searches
+   further on a match. Record the result as one line in the plan (`blocks:
+   none` or the candidates adopted). A plan for a new build without that line
+   is not final.
+3. Check in on the plan only on the first run of a build; then mark items as
+   you go and add a brief review at the end.
+4. If a build goes sideways mid-run: stop and re-plan, do not keep pushing.
 
 ## Blockers
 

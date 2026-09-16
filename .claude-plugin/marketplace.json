@@ -1,6 +1,8 @@
 {
   "name": "arivodeaux-startup",
-  "owner": { "name": "arivodeaux" },
+  "owner": {
+    "name": "arivodeaux"
+  },
   "description": "Central resource hub: skills and reference catalogs that project repos pull from on demand.",
   "plugins": [
     {
@@ -21,7 +23,7 @@
       "name": "os",
       "source": "./plugins/os",
       "description": "Working-protocol plugin: foreman orchestration, contrarian review, session-end, delivery-lifecycle, ADHD-shaped reporting, frontend design judgment, the three foreman agents, and two context-discipline hooks.",
-      "version": "5.3.0",
+      "version": "5.3.1",
       "category": "workflow"
     }
   ]
