@@ -1,6 +1,6 @@
 # CLAUDE.md | {{YOUR NAME}}
 
-# Version: global template v2.0 (Two-Phase Operating Model, Phase 2 Authority, Machine Mode, per-host limits) | Last updated: {{DATE}}
+# Version: global template v2.1 (adds never-restart-own-session / stop-old-loop-first rule) | Last updated: {{DATE}}
 
 > Machine-wide config. Loads into every session on this machine, from any
 > directory, across every project. You run from root on purpose if this box is
@@ -186,7 +186,11 @@ this is worth' framing unless I ask."}}
   gates control flow, because it also matches wrapper command lines and half-dead
   processes. Some runtimes swallow the polite terminate signal: force-kill those,
   and give single-resource clients a singleton lock (bind a localhost port) so
-  duplicates refuse to start.
+  duplicates refuse to start. Never restart the server or session the current
+  chat runs on; hand that step to another session or to the boot path after the
+  chat ends. Before starting a replacement supervisor loop, stop the old one by
+  pid chain (inner, wrapper, loop) and confirm it is gone. `screen -S <name>`
+  prefix-matches: quit screens by exact `<pid>.<name>`.
 - **Measurement before instruction:** when directing human hands (bench wiring,
   GUI steps) or debugging the physical/visual world, validate the claim against
   ground truth first: a measurement beats a photo, a photo beats a document. Two
