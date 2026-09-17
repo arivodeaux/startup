@@ -193,6 +193,14 @@ this is worth' framing unless I ask."}}
   artifacts sharing an origin count as ONE source. State the falsifier with the
   instruction. After two failed attempts on one theory, the next step is a
   measurement, never a third instruction.
+- **Keychain and TCC live only in the GUI login session (macOS):** SSH sessions,
+  launchd daemons, and remote-control sessions cannot read the login keychain or
+  hold TCC grants, so auth-status commands, screenshots, and similar report false
+  logged-out/denied there. Never trust an auth or permission check from those
+  contexts. Verify through a GUI-attributed relay (a command run via Terminal.app)
+  or through plain config evidence (account fields in config files, keychain item
+  metadata without reading the secret), and never work around it by storing a
+  login password on disk.
 - **Subagents + model tiering (hard rule):** the orchestrating session plans and
   judges; it does not implement while workers work, and makes only small
   ledger/config/state edits itself. DISPATCH GATE before every task: multi-file,
